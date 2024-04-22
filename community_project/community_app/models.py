@@ -1,5 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import User
+from jsonfield import JSONField
 
 class Community(models.Model):
     name = models.CharField(max_length=255)
@@ -13,13 +14,13 @@ class Community(models.Model):
 class PostTemplate(models.Model):
     name = models.CharField(max_length=255)
     community = models.ForeignKey(Community, on_delete=models.CASCADE, related_name='templates')
-    settings = models.JSONField()  # Assuming settings will be stored as JSON
+    settings = JSONField()  # Assuming settings will be stored as JSON
     created_by = models.ForeignKey(User, on_delete=models.CASCADE)
     created_date = models.DateTimeField(auto_now_add=True)
 
 class Post(models.Model):
     created_date = models.DateTimeField(auto_now_add=True)
-    input = models.JSONField()
+    input = JSONField()
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     community = models.ForeignKey(Community, on_delete=models.CASCADE, related_name='posts')
     likes = models.PositiveIntegerField(default=0)

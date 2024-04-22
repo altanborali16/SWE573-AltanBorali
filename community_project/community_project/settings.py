@@ -37,6 +37,8 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'community_app',
+    'community_project',
 ]
 
 MIDDLEWARE = [
@@ -76,14 +78,14 @@ WSGI_APPLICATION = 'community_project.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'sql_server.pyodbc',
-        'NAME': 'your_database_name',
-        'USER': 'your_database_user',
-        'PASSWORD': 'your_database_password',
-        'HOST': 'your_database_host',  # Usually 'localhost' or SQL Server instance name
-        'PORT': '',  # Leave empty for default port
+        'NAME': 'CommunityDB',
+        'USER': '',
+        'PASSWORD': '',
+        'HOST': 'localhost',
+        'PORT': '',
+
         'OPTIONS': {
-            'driver': 'ODBC Driver 17 for SQL Server',  # Driver version may vary
-            'extra_params': 'Trusted_Connection=yes;',  # For Windows authentication
+            'driver': 'ODBC Driver 17 for SQL Server',
         },
     },
 }
