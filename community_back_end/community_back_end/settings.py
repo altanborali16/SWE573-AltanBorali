@@ -59,6 +59,7 @@ CORS_ALLOWED_ORIGINS = [
 CORS_ALLOW_METHODS = [
     'GET',
     'POST',
+    'PUT',
 ]
 
 MIDDLEWARE = [

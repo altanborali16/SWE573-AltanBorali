@@ -21,4 +21,6 @@ from backend import views
 urlpatterns = [
     path('api/register/', views.UserRegister.as_view(), name='user_register'),
     path('api/login/', views.UserLogin.as_view(), name='user_login'),
+    path('api/user/', views.UserDetailView.as_view(), name='user_detail_view'),
+    path('api/update_user/', views.UserProfile.as_view(), name='user_profile'),
 ]

@@ -7,6 +7,8 @@ from rest_framework.authtoken.models import Token
 from .serializers import UserSerializer
 from rest_framework.exceptions import ValidationError
 from django.core.exceptions import ObjectDoesNotExist
+from rest_framework.views import APIView
+from rest_framework.permissions import IsAuthenticated
 
 
 class UserRegister(generics.CreateAPIView):
@@ -38,3 +40,26 @@ class UserLogin(generics.GenericAPIView):
             })
         else:
             return Response({'error': 'Incorrect password'}, status=status.HTTP_401_UNAUTHORIZED)
+        
+
+class UserDetailView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request, *args, **kwargs):
+        user = request.user  # This will give you the authenticated user
+        data = {
+            'username': user.username,
+            'email': user.email,
+            'first_name' : user.first_name,
+            'last_name' : user.last_name,
+        }
+        return Response(data)
+
+class UserProfile(APIView):
+    def put(self, request, *args, **kwargs):
+        user = request.user  # Assuming the user is authenticated
+        serializer = UserSerializer(user, data=request.data, partial=True)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)

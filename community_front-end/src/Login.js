@@ -1,12 +1,14 @@
 import React, { useState } from "react";
 import axios from "axios";
-import { Link } from "react-router-dom"; // Import Link
+import { Link } from "react-router-dom";
 import "bootstrap/dist/css/bootstrap.min.css";
+import { useNavigate } from "react-router-dom";
 
 const Login = () => {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
+  const navigate = useNavigate();
 
   const handleLogin = async () => {
     if (!username || !password) {
@@ -19,16 +21,31 @@ const Login = () => {
         password,
       });
       console.log(response.data); // Handle response
+      // Check if login was successful
+      if (response.data.token) {
+        // Redirect to homepage if login is successful
+        localStorage.setItem("token", response.data.token);
+        navigate("/home");
+      } else {
+        // Set error message based on server response
+        setError("Invalid credentials");
+      }
     } catch (error) {
       console.error(error); // Handle error
+      setError("Invalid credentials");
     }
   };
 
   return (
-    <div className="container mt-5">
-      <div className="row justify-content-center">
+    <div className="container">
+      <header className="d-flex justify-content-center align-items-center py-3">
+        <div>
+          <h1 className="text-center fw-bold">COMMUNITY PLATFORM</h1>
+        </div>
+      </header>
+      <div className="row justify-content-center mt-5">
         <div className="col-md-6">
-        {error && <div className="alert alert-danger">{error}</div>}
+          {error && <div className="alert alert-danger">{error}</div>}
           <form>
             <div className="mb-3">
               <input
