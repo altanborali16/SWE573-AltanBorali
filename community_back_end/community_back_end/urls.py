@@ -27,4 +27,6 @@ urlpatterns = [
     path('api/community/<int:pk>/', views.CommunityDetail.as_view(), name='community-detail'),
     path('api/community/<int:community_id>/templates/', views.TemplateList.as_view(), name='template-list'),
     path('api/template/<int:pk>/', views.TemplateDetail.as_view(), name='template-detail'),
+    path('api/posts/', views.PostList.as_view(), name='post-list'),
+    path('api/community/<community_id>/posts/', views.CommunityPosts.as_view(), name='community-post-list')
 ]

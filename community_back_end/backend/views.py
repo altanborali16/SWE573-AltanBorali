@@ -4,12 +4,12 @@ from rest_framework import generics, permissions, status
 from rest_framework.response import Response
 from django.contrib.auth import authenticate
 from rest_framework.authtoken.models import Token
-from .serializers import UserSerializer, CommunitySerializer, PostTemplateSerializer
+from .serializers import UserSerializer, CommunitySerializer, PostTemplateSerializer, PostSerializer
 from rest_framework.exceptions import ValidationError
 from django.core.exceptions import ObjectDoesNotExist
 from rest_framework.views import APIView
 from rest_framework.permissions import IsAuthenticated
-from .models import Community, PostTemplate
+from .models import Community, PostTemplate, Post
 from django.http import Http404
 
 
@@ -164,3 +164,29 @@ class TemplateDetail(APIView):
         template = self.get_object(pk)
         template.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
+    
+class PostList(APIView):
+    def post(self, request):
+        request_data = request.data.copy()
+        print(request.data)
+        template_id = request_data.pop('template_id', None)
+        community_id = request_data.pop('community_id', None)
+        
+        if template_id is None or community_id is None:
+            return Response({'error': 'Template ID and community ID are required.'}, status=status.HTTP_400_BAD_REQUEST)
+        
+        request_data.setdefault('community', request.data['community_id'])
+        request_data.setdefault('template', request.data['template_id'])
+
+        serializer = PostSerializer(data=request_data)
+        if serializer.is_valid():
+            serializer.validated_data['user'] = request.user
+            serializer.save(template_id=template_id, community_id=community_id)
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+class CommunityPosts(APIView):
+    def get(self, request, community_id):
+        posts = Post.objects.filter(community_id=community_id)
+        serializer = PostSerializer(posts, many=True)
+        return Response(serializer.data)

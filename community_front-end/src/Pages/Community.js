@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import axios from "axios";
+import "bootstrap/dist/css/bootstrap.min.css";
+import { Modal, Button, Form, Card } from "react-bootstrap";
 
 const Community = () => {
   const navigate = useNavigate();
@@ -13,6 +15,11 @@ const Community = () => {
   const [fieldToAdd, setFieldToAdd] = useState({ name: "", type: "" });
   const [fieldTypes] = useState(["Text", "Number", "Date", "Boolean"]);
   const [showModal, setShowModal] = useState(false);
+  const [showPostModal, setShowPostModal] = useState(false);
+  const [selectedTemplate, setSelectedTemplate] = useState(null);
+  const [postformData, setPostFormData] = useState({ title: "" });
+  const [errorMessage, setErrorMessage] = useState("");
+  const [posts, setPosts] = useState([]);
 
   useEffect(() => {
     // Fetch community data using the ID
@@ -28,7 +35,7 @@ const Community = () => {
             },
           }
         );
-        console.log("Response :", response.data);
+        console.log("community :", response.data);
         setCommunity(response.data);
       } catch (error) {
         console.error("Error fetching community data:", error);
@@ -48,6 +55,7 @@ const Community = () => {
             },
           }
         );
+        console.log("templates :", response.data);
         setTemplates(response.data);
       } catch (error) {
         console.error("Error fetching templates:", error);
@@ -56,6 +64,26 @@ const Community = () => {
     };
 
     fetchTemplates(); // Call the fetch function on component mount
+
+    const fetchPosts = async () => {
+      try {
+        const response = await axios.get(
+          `http://localhost:8000/api/community/${id}/posts/`,
+          {
+            headers: {
+              Authorization: `Token ${token}`,
+            },
+          }
+        );
+        console.log("posts :", response.data);
+        setPosts(response.data);
+      } catch (error) {
+        console.error("Error fetching posts:", error);
+        // Handle error (e.g., show an error message)
+      }
+    };
+
+    fetchPosts();
   }, [id]);
 
   const handleHomePage = () => {
@@ -71,7 +99,7 @@ const Community = () => {
   const handleAddField = () => {
     if (fieldToAdd.name === "" || fieldToAdd.type === "") return;
     setNewTemplateFields([...newTemplateFields, fieldToAdd]);
-    setFieldToAdd("");
+    setFieldToAdd({ name: "", type: "" });
   };
   const handleCreateTemplate = async () => {
     if (newTemplateName === "") return;
@@ -97,6 +125,60 @@ const Community = () => {
       console.error("Error creating template:", error);
       // Handle error (e.g., show an error message)
     }
+  };
+  const handleCreatePost = async () => {
+    if (!isFormValid()) {
+      setErrorMessage("Please fill all fields.");
+      console.log("Please fill in all required fields.");
+      return;
+    }
+
+    try {
+      const token = localStorage.getItem("token");
+      const response = await axios.post(
+        "http://localhost:8000/api/posts/",
+        {
+          input: JSON.stringify(postformData),
+          template_id: selectedTemplate.id,
+          community_id: id,
+        },
+        {
+          headers: {
+            Authorization: `Token ${token}`,
+            "Content-Type": "application/json",
+          },
+        }
+      );
+      console.log("Post created:", response.data);
+      // Clear form data and error message, and close the modal
+      setPostFormData({ title: "" });
+      setErrorMessage("");
+      setShowPostModal(false);
+    } catch (error) {
+      console.error("Error creating post:", error);
+      setErrorMessage("Error creating post. Please try again.");
+    }
+  };
+  const handleInputChange = (e) => {
+    const { name, value } = e.target;
+    setPostFormData((prevData) => ({
+      ...prevData,
+      [name]: value,
+    }));
+  };
+  const isFormValid = () => {
+    if (!postformData.title.trim() || !selectedTemplate) {
+      return false;
+    }
+    console.log("selectedTemplate.settings : ", selectedTemplate.settings);
+    for (const field of JSON.parse(selectedTemplate.settings)) {
+      console.log("NAme : ", field.name);
+      const value = postformData[field.name.toLowerCase().replace(/\s/g, "_")];
+      if (!value || value.trim() === "") {
+        return false;
+      }
+    }
+    return true;
   };
 
   return (
@@ -245,9 +327,99 @@ const Community = () => {
                 ))}
               </ul>
             )}
+            <Button
+              variant="primary"
+              onClick={() => {
+                setSelectedTemplate(template);
+                setShowPostModal(true);
+              }}
+            >
+              Create Post
+            </Button>
           </div>
         ))}
+        {/* Modal for creating a new post */}
+        <Modal
+          show={showPostModal}
+          onHide={() => {
+            setShowPostModal(false);
+            setErrorMessage("");
+            setPostFormData({ title: "" });
+          }}
+        >
+          <Modal.Header closeButton>
+            <Modal.Title>Create Post</Modal.Title>
+          </Modal.Header>
+          <Modal.Body>
+            <Form>
+              <Form.Group>
+                <Form.Label>Title</Form.Label>
+                <Form.Control
+                  type="text"
+                  name="title"
+                  onChange={handleInputChange}
+                  required
+                />
+                <Form.Control.Feedback type="invalid">
+                  Title is required.
+                </Form.Control.Feedback>
+              </Form.Group>
+              {selectedTemplate &&
+                JSON.parse(selectedTemplate.settings).map((field, index) => (
+                  <Form.Group key={index}>
+                    <Form.Label>{field.name}</Form.Label>
+                    <Form.Control
+                      type={field.type}
+                      name={field.name.toLowerCase().replace(/\s/g, "_")}
+                      onChange={handleInputChange}
+                      required
+                    />
+                    <Form.Control.Feedback type="invalid">
+                      {field.name} is required.
+                    </Form.Control.Feedback>
+                  </Form.Group>
+                ))}
+            </Form>
+          </Modal.Body>
+          <Modal.Footer>
+            <Button
+              variant="secondary"
+              onClick={() => {
+                setShowPostModal(false);
+                setErrorMessage("");
+                setPostFormData({ title: "" });
+              }}
+            >
+              Close
+            </Button>
+            <Button variant="primary" onClick={handleCreatePost}>
+              Create
+            </Button>
+          </Modal.Footer>
+          {errorMessage && (
+            <div className="alert alert-danger">{errorMessage}</div>
+          )}
+        </Modal>
       </div>
+      <h1>Community Posts</h1>
+      {posts.map((post) => (
+        <Card key={post.id} className="mb-3">
+          <Card.Body>
+            {post.input &&
+              Object.keys(JSON.parse(post.input)).map((key, index) => (
+                <div key={index}>
+                  {key === "title" ? (
+                    <Card.Title>{JSON.parse(post.input)[key]}</Card.Title>
+                  ) : (
+                    <Card.Text>
+                      <strong>{key}:</strong> {JSON.parse(post.input)[key]}
+                    </Card.Text>
+                  )}
+                </div>
+              ))}
+          </Card.Body>
+        </Card>
+      ))}
     </div>
   );
 };

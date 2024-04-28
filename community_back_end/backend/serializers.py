@@ -1,6 +1,6 @@
 from rest_framework import serializers
 from django.contrib.auth.models import User
-from .models import Community, PostTemplate
+from .models import Community, PostTemplate, Post
 
 
 class UserSerializer(serializers.ModelSerializer):
@@ -34,3 +34,9 @@ class PostTemplateSerializer(serializers.ModelSerializer):
     class Meta:
         model = PostTemplate
         fields = ['id', 'name', 'community', 'settings', 'created_by', 'created_date']
+
+class PostSerializer(serializers.ModelSerializer):
+    user = UserSerializer(required=False)
+    class Meta:
+        model = Post
+        fields = '__all__'  # You can specify the fields explicitly if needed
