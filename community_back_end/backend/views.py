@@ -4,12 +4,12 @@ from rest_framework import generics, permissions, status
 from rest_framework.response import Response
 from django.contrib.auth import authenticate
 from rest_framework.authtoken.models import Token
-from .serializers import UserSerializer, CommunitySerializer
+from .serializers import UserSerializer, CommunitySerializer, PostTemplateSerializer
 from rest_framework.exceptions import ValidationError
 from django.core.exceptions import ObjectDoesNotExist
 from rest_framework.views import APIView
 from rest_framework.permissions import IsAuthenticated
-from .models import Community
+from .models import Community, PostTemplate
 from django.http import Http404
 
 
@@ -76,12 +76,25 @@ class CommunityList(APIView):
 
     def post(self, request):
         serializer = CommunitySerializer(data=request.data)
+        print("user : " , request.user)
+        print("Is ok : " , serializer.is_valid())
         if serializer.is_valid():
-            # print("user : " , request.user)
-            serializer.validated_data['owner'] = request.user
+            serializer.validated_data['owner'] = request.user  # Set owner after validation
             serializer.save()
+            # Create default template
+            default_template_data = {
+                'name': 'Default Template',
+                'community': serializer.instance.id,
+                'settings': '[{"name": "Description", "type": "Text"}]',  # Default settings as JSON string
+                'created_by': request.user.id,
+            }
+            template_serializer = PostTemplateSerializer(data=default_template_data)
+            if template_serializer.is_valid():
+                template_serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        else:
+            print("Validation errors:", serializer.errors)
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
 class CommunityDetail(APIView):
@@ -108,4 +121,46 @@ class CommunityDetail(APIView):
         community = self.get_object(pk)
         community.is_deleted = True
         community.save()
+        return Response(status=status.HTTP_204_NO_CONTENT)
+    
+class TemplateList(APIView):
+    def get(self, request, community_id):
+        templates = PostTemplate.objects.filter(community_id=community_id)
+        serializer = PostTemplateSerializer(templates, many=True)
+        return Response(serializer.data)
+
+    def post(self, request, community_id):
+        data = request.data.copy()  # Make a copy to avoid modifying the original data
+        data['community'] = community_id  # Set the community ID in the data
+        data['created_by'] = request.user.id
+        serializer = PostTemplateSerializer(data=data)
+        if serializer.is_valid():
+            serializer.save(created_by=request.user)
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+class TemplateDetail(APIView):
+    def get_object(self, pk):
+        try:
+            return PostTemplate.objects.get(pk=pk)
+        except PostTemplate.DoesNotExist:
+            raise Http404
+
+    def get(self, request, pk):
+        template = self.get_object(pk)
+        serializer = PostTemplateSerializer(template)
+        return Response(serializer.data)
+
+    def put(self, request, pk):
+        template = self.get_object(pk)
+        serializer = PostTemplateSerializer(template, data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    def delete(self, request, pk):
+        template = self.get_object(pk)
+        template.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)

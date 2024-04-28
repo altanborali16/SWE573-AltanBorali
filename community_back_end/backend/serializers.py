@@ -1,6 +1,6 @@
 from rest_framework import serializers
 from django.contrib.auth.models import User
-from .models import Community
+from .models import Community, PostTemplate
 
 
 class UserSerializer(serializers.ModelSerializer):
@@ -20,7 +20,7 @@ class UserSerializer(serializers.ModelSerializer):
 
 
 class CommunitySerializer(serializers.ModelSerializer):
-    owner = UserSerializer()
+    owner = UserSerializer(required=False)
     class Meta:
         model = Community
         fields = ['id', 'name', 'description', 'is_private',
@@ -29,3 +29,8 @@ class CommunitySerializer(serializers.ModelSerializer):
             'managers': {'required': False},
             'followers': {'required': False},
         }
+
+class PostTemplateSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = PostTemplate
+        fields = ['id', 'name', 'community', 'settings', 'created_by', 'created_date']
