@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
+import "bootstrap/dist/css/bootstrap.min.css";
 
 const UserProfile = () => {
   const navigate = useNavigate();
@@ -58,12 +59,11 @@ const UserProfile = () => {
           },
         }
       );
-      console.log("Response : " , response.data); // Handle response
+      console.log("Response : ", response.data); // Handle response
       if (response.status === 200) {
         setSuccess("Profile Updated");
         setError("");
-      }
-      else{
+      } else {
         setError("Profile cannot Updated");
         setSuccess("");
       }
@@ -104,33 +104,50 @@ const UserProfile = () => {
           <h1>User Profile</h1>
           <form onSubmit={handleUpdateProfile}>
             <div className="mb-3">
-              <label htmlFor="username">Username:</label>
-              <input type="text" id="username" value={username} disabled />
+              <label htmlFor="username" className="form-label">
+                Username:
+              </label>
+              <input
+                type="text"
+                id="username"
+                value={username}
+                className="form-control"
+                disabled
+              />
             </div>
             <div className="mb-3">
-              <label htmlFor="email">Email:</label>
+              <label htmlFor="email" className="form-label">
+                Email:
+              </label>
               <input
                 type="email"
                 id="email"
                 value={email}
+                className="form-control"
                 onChange={(e) => setEmail(e.target.value)}
               />
             </div>
             <div className="mb-3">
-              <label htmlFor="firstName">First Name:</label>
+              <label htmlFor="firstName" className="form-label">
+                First Name:
+              </label>
               <input
                 type="text"
                 id="firstName"
                 value={firstName}
+                className="form-control"
                 onChange={(e) => setFirstName(e.target.value)}
               />
             </div>
             <div className="mb-3">
-              <label htmlFor="lastName">Last Name:</label>
+              <label htmlFor="lastName" className="form-label">
+                Last Name:
+              </label>
               <input
                 type="text"
                 id="lastName"
                 value={lastName}
+                className="form-control"
                 onChange={(e) => setLastName(e.target.value)}
               />
             </div>

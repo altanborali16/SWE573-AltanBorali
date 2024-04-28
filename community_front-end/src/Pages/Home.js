@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate , Link} from "react-router-dom";
 import axios from "axios";
+import "bootstrap/dist/css/bootstrap.min.css";
 
 const Home = () => {
   const navigate = useNavigate();
@@ -35,6 +36,9 @@ const Home = () => {
     localStorage.removeItem("token");
     navigate("/login");
   };
+  const handleMyCommunities = () => {
+    navigate("/usercommunities");
+  };
 
   return (
     <div className="container">
@@ -49,6 +53,12 @@ const Home = () => {
           <Link to="/userprofile" className="btn btn-link">
             {username}
           </Link>
+          <button
+            className="btn btn-primary me-2"
+            onClick={handleMyCommunities}
+          >
+            My Communities
+          </button>
           <button className="btn btn-danger" onClick={handleSignOut}>
             Sign Out
           </button>
