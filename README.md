@@ -18,6 +18,8 @@ run python manage.py migrate
 
 After that step your database tables should be created.
 
+To run back-end server => python manage.py runserver
+
 
 ## Front-end
 If you dont have node.js first download node.j from https://nodejs.org/en/download/current
