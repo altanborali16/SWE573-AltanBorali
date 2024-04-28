@@ -11,7 +11,9 @@ projectrepo/community_back_end/community_back_end/settings.py =>Refill datbase i
 ![image](https://github.com/altanborali16/SWE573-AltanBorali/assets/93518063/a75000e6-04dc-48ad-a5db-d653f266bdb3)
 
 projectrepo/community_back_end :
+
 run python manage.py makemigrations
+
 run python manage.py migrate
 
 After that step your database tables should be created.
@@ -19,5 +21,9 @@ After that step your database tables should be created.
 
 ## Front-end
 If you dont have node.js first download node.j from https://nodejs.org/en/download/current
-run npm i
-run npm start
+
+projectrepo/communit_front_end :
+
+run npm i (only once)
+
+run npm start (on every start)
