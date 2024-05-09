@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import "bootstrap/dist/css/bootstrap.min.css";
+import Navbar from './Navbar';
 
 const UserProfile = () => {
   const navigate = useNavigate();
@@ -80,25 +81,26 @@ const UserProfile = () => {
   const handleSignOut = () => {
     navigate("/login");
   };
+  const handleMyCommunities = () => {
+    navigate("/usercommunities");
+  };
+  const handleCommunities = () => {
+    // navigate("/usercommunities");
+  };
+  const handleUserSettings = () => {
+    navigate("/userprofile");
+  };
 
   return (
     <div className="container">
-      <header className="d-flex justify-content-between align-items-center py-3">
-        <div>
-          <span className="fw-bold">LOGO</span> {/* Replace with your logo */}
-        </div>
-        <div>
-          <h1 className="text-center fw-bold">COMMUNITY PLATFORM</h1>
-        </div>
-        <div>
-          <button className="btn" onClick={handleHomePage}>
-            Home
-          </button>
-          <button className="btn btn-danger" onClick={handleSignOut}>
-            Sign Out
-          </button>
-        </div>
-      </header>
+      {/* Navbar */}
+      <Navbar
+        handleHomePage={handleHomePage}
+        handleSignOut={handleSignOut}
+        handleMyCommunities={handleMyCommunities}
+        handleCommunities={handleCommunities}
+        handleUserSettings={handleUserSettings}
+      />
       <div className="row justify-content-center mt-5">
         <div className="col-md-6">
           <h1>User Profile</h1>

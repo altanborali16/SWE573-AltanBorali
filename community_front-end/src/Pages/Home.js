@@ -1,11 +1,12 @@
-import React, { useEffect, useState } from "react";
-import { useNavigate , Link} from "react-router-dom";
-import axios from "axios";
+import React, { useEffect } from "react";
+import { useNavigate } from "react-router-dom";
+// import axios from "axios";
 import "bootstrap/dist/css/bootstrap.min.css";
+import Navbar from './Navbar';
 
 const Home = () => {
   const navigate = useNavigate();
-  const [username, setUsername] = useState("");
+  // const [username, setUsername] = useState("");
 
   useEffect(() => {
     const token = localStorage.getItem("token");
@@ -14,24 +15,27 @@ const Home = () => {
       // Redirect to login if token is not present
       navigate("/login");
     } else {
-      // Fetch user details using the token
-      axios
-        .get("http://localhost:8000/api/user/", {
-          headers: {
-            Authorization: `Token ${token}`,
-          },
-        })
-        .then((response) => {
-          setUsername(response.data.username);
-        })
-        .catch((error) => {
-          console.error("Error fetching user data:", error);
-          // Handle error (e.g., redirect to login)
-          navigate("/login");
-        });
+      // // Fetch user details using the token
+      // axios
+      //   .get("http://localhost:8000/api/user/", {
+      //     headers: {
+      //       Authorization: `Token ${token}`,
+      //     },
+      //   })
+      //   .then((response) => {
+      //     setUsername(response.data.username);
+      //   })
+      //   .catch((error) => {
+      //     console.error("Error fetching user data:", error);
+      //     // Handle error (e.g., redirect to login)
+      //     navigate("/login");
+      //   }
+      //   );
     }
   }, [navigate]);
-
+  const handleHomePage = () => {
+    navigate("/home");
+  };
   const handleSignOut = () => {
     localStorage.removeItem("token");
     navigate("/login");
@@ -39,31 +43,23 @@ const Home = () => {
   const handleMyCommunities = () => {
     navigate("/usercommunities");
   };
+  const handleCommunities = () => {
+    // navigate("/usercommunities");
+  };
+  const handleUserSettings = () => {
+    navigate("/userprofile");
+  };
 
   return (
     <div className="container">
-      <header className="d-flex justify-content-between align-items-center py-3">
-        <div>
-          <span className="fw-bold">LOGO</span> {/* Replace with your logo */}
-        </div>
-        <div>
-          <h1 className="text-center fw-bold">COMMUNITY PLATFORM</h1>
-        </div>
-        <div>
-          <Link to="/userprofile" className="btn btn-link">
-            {username}
-          </Link>
-          <button
-            className="btn btn-primary me-2"
-            onClick={handleMyCommunities}
-          >
-            My Communities
-          </button>
-          <button className="btn btn-danger" onClick={handleSignOut}>
-            Sign Out
-          </button>
-        </div>
-      </header>
+      {/* Navbar */}
+      <Navbar
+        handleHomePage={handleHomePage}
+        handleSignOut={handleSignOut}
+        handleMyCommunities={handleMyCommunities}
+        handleCommunities={handleCommunities}
+        handleUserSettings={handleUserSettings}
+      />
       <div className="content">{/* Your main content here */}</div>
     </div>
   );

@@ -3,6 +3,7 @@ import { useParams, useNavigate } from "react-router-dom";
 import axios from "axios";
 import "bootstrap/dist/css/bootstrap.min.css";
 import { Modal, Button, Form, Card } from "react-bootstrap";
+import Navbar from './Navbar';
 
 const Community = () => {
   const navigate = useNavigate();
@@ -13,7 +14,7 @@ const Community = () => {
   const [newTemplateName, setNewTemplateName] = useState("");
   const [newTemplateFields, setNewTemplateFields] = useState([]);
   const [fieldToAdd, setFieldToAdd] = useState({ name: "", type: "" });
-  const [fieldTypes] = useState(["Text", "Number", "Date", "Boolean"]);
+  const [fieldTypes] = useState(["Text", "Number", "Date", "Bool"]);
   const [showModal, setShowModal] = useState(false);
   const [showPostModal, setShowPostModal] = useState(false);
   const [selectedTemplate, setSelectedTemplate] = useState(null);
@@ -86,13 +87,6 @@ const Community = () => {
     fetchPosts();
   }, [id]);
 
-  const handleHomePage = () => {
-    navigate("/home");
-  };
-  const handleSignOut = () => {
-    localStorage.removeItem("token");
-    navigate("/login");
-  };
   if (!community) {
     return <div>Loading...</div>; // Placeholder for loading state
   }
@@ -180,25 +174,33 @@ const Community = () => {
     }
     return true;
   };
+  const handleHomePage = () => {
+    navigate("/home");
+  };
+  const handleSignOut = () => {
+    localStorage.removeItem("token");
+    navigate("/login");
+  };
+  const handleMyCommunities = () => {
+    navigate("/usercommunities");
+  };
+  const handleCommunities = () => {
+    // navigate("/usercommunities");
+  };
+  const handleUserSettings = () => {
+    navigate("/userprofile");
+  };
 
   return (
     <div className="container">
-      <header className="d-flex justify-content-between align-items-center py-3">
-        <div>
-          <span className="fw-bold">LOGO</span> {/* Replace with your logo */}
-        </div>
-        <div>
-          <h1 className="text-center fw-bold">COMMUNITY PLATFORM</h1>
-        </div>
-        <div>
-          <button className="btn" onClick={handleHomePage}>
-            Home
-          </button>
-          <button className="btn btn-danger" onClick={handleSignOut}>
-            Sign Out
-          </button>
-        </div>
-      </header>
+      {/* Navbar */}
+      <Navbar
+        handleHomePage={handleHomePage}
+        handleSignOut={handleSignOut}
+        handleMyCommunities={handleMyCommunities}
+        handleCommunities={handleCommunities}
+        handleUserSettings={handleUserSettings}
+      />
       {/* Community details */}
       <div className="container">
         <h1>{community.name}</h1>
@@ -401,6 +403,7 @@ const Community = () => {
           )}
         </Modal>
       </div>
+      {/* Posts existing templates */}
       <h1>Community Posts</h1>
       {posts.map((post) => (
         <Card key={post.id} className="mb-3">

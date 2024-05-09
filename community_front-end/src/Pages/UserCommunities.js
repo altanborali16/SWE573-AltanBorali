@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
-import "bootstrap/dist/css/bootstrap.min.css";
+import "bootstrap/dist/css/bootstrap.css";
+import Navbar from './Navbar';
 
 const UserCommunities = () => {
   const navigate = useNavigate();
@@ -18,7 +19,7 @@ const UserCommunities = () => {
     const token = localStorage.getItem("token");
     if (token) {
       axios
-        .get("http://localhost:8000/api/communities/", {
+        .get("http://localhost:8000/api/communities/usercommunities/", {
           headers: {
             Authorization: `Token ${token}`,
           },
@@ -35,9 +36,9 @@ const UserCommunities = () => {
       return;
     }
     if (!communityName || !communityDescription) {
-        setError("Community name or description cannot be empty");
-        setSuccess("");
-        return;
+      setError("Community name or description cannot be empty");
+      setSuccess("");
+      return;
     }
 
     try {
@@ -78,25 +79,26 @@ const UserCommunities = () => {
   const handleCommunityClick = (communityId) => {
     navigate(`/community/${communityId}`);
   };
+  const handleMyCommunities = () => {
+    navigate("/usercommunities");
+  };
+  const handleCommunities = () => {
+    // navigate("/usercommunities");
+  };
+  const handleUserSettings = () => {
+    navigate("/userprofile");
+  };
 
   return (
     <div className="container">
-      <header className="d-flex justify-content-between align-items-center py-3">
-        <div>
-          <span className="fw-bold">LOGO</span> {/* Replace with your logo */}
-        </div>
-        <div>
-          <h1 className="text-center fw-bold">COMMUNITY PLATFORM</h1>
-        </div>
-        <div>
-          <button className="btn" onClick={handleHomePage}>
-            Home
-          </button>
-          <button className="btn btn-danger" onClick={handleSignOut}>
-            Sign Out
-          </button>
-        </div>
-      </header>
+      {/* Navbar */}
+      <Navbar
+        handleHomePage={handleHomePage}
+        handleSignOut={handleSignOut}
+        handleMyCommunities={handleMyCommunities}
+        handleCommunities={handleCommunities}
+        handleUserSettings={handleUserSettings}
+      />
       <h1 className="my-4">My Communities</h1>
       {error && <div className="alert alert-danger">{error}</div>}
       {success && <div className="alert alert-success">{success}</div>}

@@ -97,6 +97,13 @@ class CommunityList(APIView):
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
+class UserCommunityList(APIView):
+    def get(self, request):
+        user = request.user
+        communities = Community.objects.filter(owner=user) | Community.objects.filter(followers=user)
+        serializer = CommunitySerializer(communities, many=True)
+        return Response(serializer.data)
+    
 class CommunityDetail(APIView):
     def get_object(self, pk):
         try:
