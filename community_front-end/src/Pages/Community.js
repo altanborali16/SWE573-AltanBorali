@@ -185,7 +185,7 @@ const Community = () => {
     navigate("/usercommunities");
   };
   const handleCommunities = () => {
-    // navigate("/usercommunities");
+    navigate("/commmunities");
   };
   const handleUserSettings = () => {
     navigate("/userprofile");

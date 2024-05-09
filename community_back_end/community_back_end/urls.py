@@ -22,6 +22,7 @@ urlpatterns = [
     path('api/register/', views.UserRegister.as_view(), name='user_register'),
     path('api/login/', views.UserLogin.as_view(), name='user_login'),
     path('api/user/', views.UserDetailView.as_view(), name='user_detail_view'),
+    path('api/current_user/', views.CurrentUserView.as_view(), name='current_user'),
     path('api/update_user/', views.UserProfile.as_view(), name='user_profile'),
     path('api/communities/',  views.CommunityList.as_view(), name='community-list'),
     path('api/communities/usercommunities/',  views.UserCommunityList.as_view(), name='community-list'),
@@ -29,5 +30,6 @@ urlpatterns = [
     path('api/community/<int:community_id>/templates/', views.TemplateList.as_view(), name='template-list'),
     path('api/template/<int:pk>/', views.TemplateDetail.as_view(), name='template-detail'),
     path('api/posts/', views.PostList.as_view(), name='post-list'),
-    path('api/community/<community_id>/posts/', views.CommunityPosts.as_view(), name='community-post-list')
+    path('api/community/<community_id>/posts/', views.CommunityPosts.as_view(), name='community-post-list'),
+    path('api/follow_community/<int:community_id>/', views.follow_community, name='follow_community'),
 ]
