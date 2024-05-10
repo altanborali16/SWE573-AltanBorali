@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import "bootstrap/dist/js/bootstrap.bundle.min.js";
 
 const NavbarWithSearch = ({
@@ -7,7 +7,14 @@ const NavbarWithSearch = ({
   handleMyCommunities,
   handleCommunities,
   handleUserSettings,
+  handleSearch,
 }) => {
+  const [searchTerm, setSearchTerm] = useState("");
+
+  const handleSubmit = (e) => {
+    e.preventDefault(); // Prevent the default form submission behavior
+    handleSearch(e.target.elements.searchInput.value); // Pass the input value to handleSearch
+  };
   return (
     <nav className="navbar navbar-expand-lg navbar-light bg-light">
       <div className="container-fluid">
@@ -38,12 +45,15 @@ const NavbarWithSearch = ({
               </button>
             </li>
           </ul>
-          <form className="d-flex">
+          <form className="d-flex" onSubmit={handleSubmit}>
             <input
               className="form-control me-2"
               type="search"
               placeholder="Search"
               aria-label="Search"
+              value={searchTerm}
+              name="searchInput"
+              onChange={(e) => setSearchTerm(e.target.value)}
             />
             <button className="btn btn-outline-success" type="submit">
               Search

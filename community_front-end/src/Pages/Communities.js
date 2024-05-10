@@ -2,11 +2,12 @@ import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import "bootstrap/dist/css/bootstrap.css";
-import Navbar from "./Navbar";
+import NavbarWithSearch from "./NavbarWithSearch";
 
 const Communities = () => {
   const [communities, setCommunities] = useState([]);
   const [currentUser, setCurrentUser] = useState(null);
+  const [filteredCommunities, setFilteredCommunities] = useState([]);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -44,6 +45,7 @@ const Communities = () => {
             }
           );
           setCommunities(response.data);
+          setFilteredCommunities(response.data);
           console.log("Communities:", response.data);
         } catch (error) {
           console.error("Error fetching communities:", error);
@@ -111,7 +113,7 @@ const Communities = () => {
             },
           }
         );
-  
+
         // Update the UI or state to reflect the unsubscribe action
         // For example, update the communities state to show the user has unsubscribed
         const updatedCommunities = communities.map((community) => {
@@ -166,21 +168,37 @@ const Communities = () => {
   const handleUserSettings = () => {
     navigate("/userprofile");
   };
+  // Function to handle search input change
+  const handleSearch = (e) => {
+    console.log("E : " , e)
+    filterCommunities(e);
+  };
+
+  // Function to filter communities based on search query
+  const filterCommunities = (query) => {
+    const filtered = communities.filter(
+      (community) =>
+        community.name.toLowerCase().includes(query.toLowerCase()) ||
+        community.description.toLowerCase().includes(query.toLowerCase())
+    );
+    setFilteredCommunities(filtered);
+  };
 
   return (
     <div className="container">
-      {/* Navbar */}
-      <Navbar
+      {/* NavbarWithSearch */}
+      <NavbarWithSearch
         handleHomePage={handleHomePage}
         handleSignOut={handleSignOut}
         handleMyCommunities={handleMyCommunities}
         handleCommunities={handleCommunities}
         handleUserSettings={handleUserSettings}
+        handleSearch={handleSearch}
       />
       <h1>Communities</h1>
       <div className="row">
-        {communities && communities.length > 0 ? (
-          communities.map((community) => (
+        {filteredCommunities && filteredCommunities.length > 0 ? (
+          filteredCommunities.map((community) => (
             <div className="col-md-4 mb-4" key={community.id}>
               <div className="card">
                 <div className="card-body">
