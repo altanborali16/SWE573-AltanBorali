@@ -215,6 +215,18 @@ class PostList(APIView):
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
+class RecentPostsList(generics.ListAPIView):
+    serializer_class = PostSerializer
+    permission_classes = [permissions.IsAuthenticated]
+
+    def get_queryset(self):
+        user = self.request.user
+        # Get communities where the user is the owner or a follower
+        communities = Community.objects.filter(owner=user) | Community.objects.filter(followers=user)
+        # Get posts from those communities and sort by the last created date
+        queryset = Post.objects.filter(community__in=communities).order_by('-created_date')
+        return queryset
+
 class CommunityPosts(APIView):
     def get(self, request, community_id):
         posts = Post.objects.filter(community_id=community_id)

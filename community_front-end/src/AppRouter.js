@@ -6,7 +6,7 @@ import Home from './Pages/Home';
 import UserProfile from './Pages/UserProfile';
 import UserCommunities from './Pages/UserCommunities';
 import Community from './Pages/Community';
-import Commmunities from './Pages/Communities';
+import Communities from './Pages/Communities';
 
 const AppRouter = () => {
     return (
@@ -17,7 +17,7 @@ const AppRouter = () => {
                 <Route path="/" element={<Login/>} /> {/* Default route, e.g., for the home page */}
                 <Route path="/home" element={<Home/>} />
                 <Route path="/userprofile" element={<UserProfile/>} />
-                <Route path="/commmunities" element={<Commmunities/>} />
+                <Route path="/communities" element={<Communities/>} />
                 <Route path="/usercommunities" element={<UserCommunities/>} />
                 <Route path="/community/:id" element={<Community />} />
             </Routes>

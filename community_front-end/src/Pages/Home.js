@@ -1,38 +1,41 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-// import axios from "axios";
+import axios from "axios";
 import "bootstrap/dist/css/bootstrap.min.css";
-import Navbar from './Navbar';
+import Navbar from "./Navbar";
+import {  Card } from "react-bootstrap";
 
 const Home = () => {
   const navigate = useNavigate();
-  // const [username, setUsername] = useState("");
+  const [posts, setPosts] = useState([]);
 
   useEffect(() => {
     const token = localStorage.getItem("token");
-    // console.log("Token :" , token)
     if (!token) {
-      // Redirect to login if token is not present
       navigate("/login");
     } else {
-      // // Fetch user details using the token
-      // axios
-      //   .get("http://localhost:8000/api/user/", {
-      //     headers: {
-      //       Authorization: `Token ${token}`,
-      //     },
-      //   })
-      //   .then((response) => {
-      //     setUsername(response.data.username);
-      //   })
-      //   .catch((error) => {
-      //     console.error("Error fetching user data:", error);
-      //     // Handle error (e.g., redirect to login)
-      //     navigate("/login");
-      //   }
-      //   );
+      const fetchPosts = async () => {
+        try {
+          const response = await axios.get(
+            "http://localhost:8000/api/recent_posts/",
+            {
+              headers: {
+                Authorization: `Token ${token}`,
+              },
+            }
+          );
+          // Assuming the API response contains an array of posts
+          setPosts(response.data);
+        } catch (error) {
+          console.error("Error fetching posts:", error);
+          // Handle error (e.g., redirect to login)
+          navigate("/login");
+        }
+      };
+      fetchPosts();
     }
   }, [navigate]);
+
   const handleHomePage = () => {
     navigate("/home");
   };
@@ -44,7 +47,7 @@ const Home = () => {
     navigate("/usercommunities");
   };
   const handleCommunities = () => {
-    navigate("/commmunities");
+    navigate("/communities");
   };
   const handleUserSettings = () => {
     navigate("/userprofile");
@@ -60,7 +63,31 @@ const Home = () => {
         handleCommunities={handleCommunities}
         handleUserSettings={handleUserSettings}
       />
-      <div className="content">{/* Your main content here */}</div>
+      <div className="content">
+        <h1>Recent Posts</h1>
+        {posts.length > 0 ? (
+          posts.map((post) => (
+            <Card key={post.id} className="mb-3">
+              <Card.Body>
+                {post.input &&
+                  Object.keys(JSON.parse(post.input)).map((key, index) => (
+                    <div key={index}>
+                      {key === "title" ? (
+                        <Card.Title>{JSON.parse(post.input)[key]}</Card.Title>
+                      ) : (
+                        <Card.Text>
+                          <strong>{key}:</strong> {JSON.parse(post.input)[key]}
+                        </Card.Text>
+                      )}
+                    </div>
+                  ))}
+              </Card.Body>
+            </Card>
+          ))
+        ) : (
+          <p>No recent posts found.</p>
+        )}
+      </div>
     </div>
   );
 };
