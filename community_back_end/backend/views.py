@@ -108,7 +108,7 @@ class CommunityList(APIView):
 class UserCommunityList(APIView):
     def get(self, request):
         user = request.user
-        communities = Community.objects.filter(owner=user) | Community.objects.filter(followers=user)
+        communities = Community.objects.filter(owner=user)
         serializer = CommunitySerializer(communities, many=True)
         return Response(serializer.data)
     
@@ -152,6 +152,20 @@ class FollowCommunityView(APIView):
             return Response({'message': f'You have followed {community.name}'})
         else:
             return Response({'message': f'You are already following {community.name}'})
+        
+class UnfollowCommunityView(APIView):
+    def post(self, request, community_id):
+        try:
+            community = Community.objects.get(id=community_id)
+        except Community.DoesNotExist:
+            return Response({'error': 'Community does not exist'}, status=status.HTTP_404_NOT_FOUND)
+
+        user = request.user  # Assuming user is authenticated
+        if user in community.followers.all():
+            community.followers.remove(user)
+            return Response({'message': f'You have unfollowed {community.name}'})
+        else:
+            return Response({'message': f'You are not following {community.name}'})
     
 class TemplateList(APIView):
     def get(self, request, community_id):
@@ -229,6 +243,6 @@ class RecentPostsList(generics.ListAPIView):
 
 class CommunityPosts(APIView):
     def get(self, request, community_id):
-        posts = Post.objects.filter(community_id=community_id)
+        posts = Post.objects.filter(community_id=community_id).order_by('-created_date')
         serializer = PostSerializer(posts, many=True)
         return Response(serializer.data)

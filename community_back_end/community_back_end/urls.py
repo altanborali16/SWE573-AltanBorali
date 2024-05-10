@@ -32,5 +32,6 @@ urlpatterns = [
     path('api/posts/', views.PostList.as_view(), name='post-list'),
     path('api/community/<community_id>/posts/', views.CommunityPosts.as_view(), name='community-post-list'),
     path('api/follow_community/<int:community_id>/', views.FollowCommunityView.as_view(), name='follow-community'),
+    path('api/unfollow_community/<int:community_id>/', views.UnfollowCommunityView.as_view(), name='unfollow_community'),
     path('api/recent_posts/', views.RecentPostsList.as_view(), name='recent_posts'),
 ]

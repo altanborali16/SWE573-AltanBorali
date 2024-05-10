@@ -54,13 +54,12 @@ const Communities = () => {
     fetchCommunities();
   }, []);
 
-
   const handleManage = (communityId) => {
-    // Handle manage button click
+    navigate(`/community/${communityId}`);
   };
 
   const handleGo = (communityId) => {
-    // Handle go button click
+    navigate(`/community/${communityId}`);
   };
 
   const handleSubscribe = async (communityId) => {
@@ -71,15 +70,15 @@ const Communities = () => {
       try {
         const response = await axios.post(
           `http://localhost:8000/api/follow_community/${communityId}/`,
-          null,  // You're not sending any data in this POST request, so use null
+          null, // You're not sending any data in this POST request, so use null
           {
             headers: {
               Authorization: `Token ${token}`,
-              'Content-Type': 'application/json',  // Content-Type header is correct
+              "Content-Type": "application/json", // Content-Type header is correct
             },
           }
         );
-  
+
         // Update the UI or state to reflect the follow action
         // For example, update the communities state to show the user is following
         const updatedCommunities = communities.map((community) => {
@@ -95,6 +94,41 @@ const Communities = () => {
         console.log(response.data.message);
       } catch (error) {
         console.error("Error following community:", error);
+      }
+    }
+  };
+  const handleUnsubscribe = async (communityId) => {
+    const token = localStorage.getItem("token");
+    if (token) {
+      try {
+        const response = await axios.post(
+          `http://localhost:8000/api/unfollow_community/${communityId}/`,
+          null,
+          {
+            headers: {
+              Authorization: `Token ${token}`,
+              "Content-Type": "application/json", // Content-Type header is correct
+            },
+          }
+        );
+  
+        // Update the UI or state to reflect the unsubscribe action
+        // For example, update the communities state to show the user has unsubscribed
+        const updatedCommunities = communities.map((community) => {
+          if (community.id === communityId) {
+            return {
+              ...community,
+              followers: community.followers.filter(
+                (followerId) => followerId !== currentUser.id
+              ),
+            };
+          }
+          return community;
+        });
+        setCommunities(updatedCommunities);
+        console.log(response.data.message);
+      } catch (error) {
+        console.error("Error unsubscribing from community:", error);
       }
     }
   };
@@ -160,9 +194,18 @@ const Communities = () => {
                       ? "Manage"
                       : community.followers &&
                         community.followers.includes(currentUser.id)
-                      ? "Go"
+                      ? "Visit"
                       : "Subscribe"}
                   </button>
+                  {community.followers &&
+                    community.followers.includes(currentUser.id) && (
+                      <button
+                        className="btn btn-primary me-2"
+                        onClick={() => handleUnsubscribe(community.id)}
+                      >
+                        Unsubscribe
+                      </button>
+                    )}
                 </div>
               </div>
             </div>

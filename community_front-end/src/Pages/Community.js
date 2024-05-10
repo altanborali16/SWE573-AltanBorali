@@ -204,12 +204,16 @@ const Community = () => {
       {/* Community details */}
       <div className="container">
         <h1>{community.name}</h1>
-        <p>Description: {community.description}</p>
-        <p>Owner: {community.owner.username}</p>
+        <p>{community.description}, Created by {community.owner.username}, Subscribers {community.followers.length} </p>
+        {/* <p>Owner: {community.owner.username}</p>
         <p>
           Managers:{" "}
           {community.managers.map((manager) => manager.username).join(", ")}
         </p>
+        <p>
+          Subscribers:{" "}
+          {community.followers.length}
+        </p> */}
         {/* Additional community details can be displayed here */}
       </div>
       {/* Templates section */}
