@@ -31,5 +31,5 @@ urlpatterns = [
     path('api/template/<int:pk>/', views.TemplateDetail.as_view(), name='template-detail'),
     path('api/posts/', views.PostList.as_view(), name='post-list'),
     path('api/community/<community_id>/posts/', views.CommunityPosts.as_view(), name='community-post-list'),
-    path('api/follow_community/<int:community_id>/', views.follow_community, name='follow_community'),
+    path('api/follow_community/<int:community_id>/', views.FollowCommunityView.as_view(), name='follow-community'),
 ]

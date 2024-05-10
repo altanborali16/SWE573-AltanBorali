@@ -12,7 +12,6 @@ from rest_framework.permissions import IsAuthenticated
 from .models import Community, PostTemplate, Post
 from django.http import Http404
 from django.http import JsonResponse
-from django.shortcuts import get_object_or_404
 
 
 class UserRegister(generics.CreateAPIView):
@@ -139,15 +138,20 @@ class CommunityDetail(APIView):
         community.save()
         return Response(status=status.HTTP_204_NO_CONTENT)
 
-def follow_community(request, community_id):
-    print("Here")
-    community = get_object_or_404(Community, id=community_id)
-    user = request.user  # Assuming user is authenticated
-    if user not in community.followers.all():
-        community.followers.add(user)
-        return JsonResponse({'message': f'You have followed {community.name}'})
-    else:
-        return JsonResponse({'message': f'You are already following {community.name}'})
+
+class FollowCommunityView(APIView):
+    def post(self, request, community_id):
+        try:
+            community = Community.objects.get(id=community_id)
+        except Community.DoesNotExist:
+            return Response({'error': 'Community does not exist'}, status=status.HTTP_404_NOT_FOUND)
+
+        user = request.user  # Assuming user is authenticated
+        if user not in community.followers.all():
+            community.followers.add(user)
+            return Response({'message': f'You have followed {community.name}'})
+        else:
+            return Response({'message': f'You are already following {community.name}'})
     
 class TemplateList(APIView):
     def get(self, request, community_id):
