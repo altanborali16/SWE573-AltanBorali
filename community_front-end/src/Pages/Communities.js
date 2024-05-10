@@ -179,7 +179,11 @@ const Communities = () => {
     const filtered = communities.filter(
       (community) =>
         community.name.toLowerCase().includes(query.toLowerCase()) ||
-        community.description.toLowerCase().includes(query.toLowerCase())
+        community.description.toLowerCase().includes(query.toLowerCase()) ||
+        community.owner.email.toLowerCase().includes(query.toLowerCase()) ||
+        community.owner.first_name.toLowerCase().includes(query.toLowerCase()) ||
+        community.owner.last_name.toLowerCase().includes(query.toLowerCase()) ||
+        community.owner.username.toLowerCase().includes(query.toLowerCase())
     );
     setFilteredCommunities(filtered);
   };
