@@ -64,7 +64,7 @@ const Home = () => {
         handleUserSettings={handleUserSettings}
       />
       <div className="content">
-        <h1>Recent Posts</h1>
+        <h1>Feed</h1>
         {posts.length > 0 ? (
           posts.map((post) => (
             <Card key={post.id} className="mb-3">

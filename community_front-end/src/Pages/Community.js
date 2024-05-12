@@ -3,7 +3,7 @@ import { useParams, useNavigate } from "react-router-dom";
 import axios from "axios";
 import "bootstrap/dist/css/bootstrap.min.css";
 import { Modal, Button, Form, Card } from "react-bootstrap";
-import Navbar from './Navbar';
+import Navbar from "./Navbar";
 
 const Community = () => {
   const navigate = useNavigate();
@@ -21,6 +21,10 @@ const Community = () => {
   const [postformData, setPostFormData] = useState({ title: "" });
   const [errorMessage, setErrorMessage] = useState("");
   const [posts, setPosts] = useState([]);
+  const [currentUser, setCurrentUser] = useState(null);
+  const [isOwner, setIsOwner] = useState(false);
+  // const [isSubscriber, setIsSubscriber] = useState(false);
+  const [isManager, setIsManager] = useState(false);
 
   useEffect(() => {
     // Fetch community data using the ID
@@ -83,9 +87,46 @@ const Community = () => {
         // Handle error (e.g., show an error message)
       }
     };
-
     fetchPosts();
+
+    const fetchCurrentUser = async () => {
+      const token = localStorage.getItem("token");
+      if (token) {
+        try {
+          const response = await axios.get(
+            "http://localhost:8000/api/current_user/",
+            {
+              headers: {
+                Authorization: `Token ${token}`,
+              },
+            }
+          );
+          setCurrentUser(response.data);
+          console.log("Current User:", response.data);
+        } catch (error) {
+          console.error("Error fetching current user:", error);
+        }
+      }
+    };
+    fetchCurrentUser();
   }, [id]);
+  useEffect(() => {
+    // Check if the community data and current user data are available
+    if (community && currentUser) {
+      // Check if the current user is the owner
+      const isOwner = community.owner && community.owner.id === currentUser.id;
+      // Check if the current user is a subscriber
+      // const isSubscriber =
+      //   community.followers && community.followers.includes(currentUser.id);
+      // Check if the current user is a manager
+      const isManager =
+        community.managers && community.managers.includes(currentUser.id);
+      setIsOwner(isOwner);
+      // setIsSubscriber(isSubscriber);
+      setIsManager(isManager);
+      console.log(isOwner, isManager);
+    }
+  }, [community, currentUser]);
 
   if (!community) {
     return <div>Loading...</div>; // Placeholder for loading state
@@ -204,26 +245,22 @@ const Community = () => {
       {/* Community details */}
       <div className="container">
         <h1>{community.name}</h1>
-        <p>{community.description}, Created by {community.owner.username}, Subscribers {community.followers.length} </p>
-        {/* <p>Owner: {community.owner.username}</p>
         <p>
-          Managers:{" "}
-          {community.managers.map((manager) => manager.username).join(", ")}
+          {community.description}, Created by {community.owner.username},
+          Subscribers {community.followers.length}{" "}
         </p>
-        <p>
-          Subscribers:{" "}
-          {community.followers.length}
-        </p> */}
-        {/* Additional community details can be displayed here */}
       </div>
       {/* Templates section */}
       <h1>Community Templates</h1>
-      <button
-        className="btn btn-primary mb-3"
-        onClick={() => setShowModal(true)}
-      >
-        Create New Template
-      </button>
+      {isOwner ||
+        (isManager && (
+          <button
+            className="btn btn-primary mb-3"
+            onClick={() => setShowModal(true)}
+          >
+            Create New Template
+          </button>
+        ))}
       {/* Modal for creating a new template */}
       {showModal && (
         <div
