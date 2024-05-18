@@ -1,0 +1,189 @@
+[
+    {
+        "model": "auth.user",
+        "pk": 2,
+        "fields": {
+            "password": "pbkdf2_sha256$720000$IRHmV1Fl3KYtBs4BDMvlq8$CYvVFUwnrLnM5LvMTMA2W/yz1rKW3QWy4kRSDgmNTv0=",
+            "last_login": null,
+            "is_superuser": false,
+            "username": "altan16",
+            "first_name": "Altan",
+            "last_name": "",
+            "email": "boralialtan@gmail.com",
+            "is_staff": false,
+            "is_active": true,
+            "date_joined": "2024-04-26T01:47:15.133501Z"
+        }
+    },
+    {
+        "model": "auth.user",
+        "pk": 3,
+        "fields": {
+            "password": "pbkdf2_sha256$720000$p5VK5nPTJRVvSteu3iKNDS$+lWSkY4ZcWnm0ZfbpMziRKR/mHeoW3aunweGjBgovE0=",
+            "last_login": null,
+            "is_superuser": false,
+            "username": "Uskudarli",
+            "first_name": "Suzan",
+            "last_name": "Uskudarli",
+            "email": "uskudarli.swe@gmail.com",
+            "is_staff": false,
+            "is_active": true,
+            "date_joined": "2024-04-27T20:30:36.557400Z"
+        }
+    },
+    {
+        "model": "auth.user",
+        "pk": 4,
+        "fields": {
+            "password": "pbkdf2_sha256$720000$HqW1fCLFE835Jg6tSSA6bP$MSRQFmd+4BsKjGpLPa/pDGH9pxM7SwqTwbeUMQEW3zQ=",
+            "last_login": null,
+            "is_superuser": false,
+            "username": "king05",
+            "first_name": "King",
+            "last_name": "",
+            "email": "king05@gmail.com",
+            "is_staff": false,
+            "is_active": true,
+            "date_joined": "2024-04-29T16:41:48.137818Z"
+        }
+    },
+    {
+        "model": "backend.community",
+        "pk": 4,
+        "fields": {
+            "id": 4,
+            "name": "Fight Academy",
+            "description": "All About Fight news",
+            "is_private": false,
+            "is_deleted": false,
+            "owner_id": 3
+        }
+    },
+    {
+        "model": "backend.community",
+        "pk": 5,
+        "fields": {
+            "id": 5,
+            "name": "Fiction Lovers",
+            "description": "Amasya'da çekilen filmler",
+            "is_private": false,
+            "is_deleted": false,
+            "owner_id": 3
+        }
+    },
+    {
+        "model": "backend.community",
+        "pk": 6,
+        "fields": {
+            "id": 6,
+            "name": "Volleyball News",
+            "description": "All news about volleyball",
+            "is_private": false,
+            "is_deleted": false,
+            "owner_id": 2
+        }
+    },
+    {
+        "model": "backend.posttemplate",
+        "pk": 2,
+        "fields": {
+            "name": "Default Template",
+            "settings": "[{\"name\": \"Description\", \"type\": \"Text\"}]",
+            "created_date": "2024-04-28T13:12:46.847346Z",
+            "community": 4,
+            "created_by": 3
+        }
+    },
+    {
+        "model": "backend.posttemplate",
+        "pk": 3,
+        "fields": {
+            "name": "Event Reminder",
+            "settings": "[{\"name\":\"Start Date\",\"type\":\"Date\"},{\"name\":\"Fighters\",\"type\":\"Text\"},{\"name\":\"Description\",\"type\":\"Text\"}]",
+            "created_date": "2024-04-28T16:00:22.115661Z",
+            "community": 4,
+            "created_by": 3
+        }
+    },
+    {
+        "model": "backend.posttemplate",
+        "pk": 4,
+        "fields": {
+            "name": "Default Template",
+            "settings": "[{\"name\": \"Description\", \"type\": \"Text\"}]",
+            "created_date": "2024-04-29 19:45:45.547323+03",
+            "community": 5,
+            "created_by": 3
+        }
+    },
+    {
+        "model": "backend.posttemplate",
+        "pk": 5,
+        "fields": {
+            "name": "Your Favourite Movie",
+            "settings": "[{\"name\":\"Start Date\",\"type\":\"Date\"},{\"name\":\"Movie Name\",\"type\":\"Text\"},{\"name\":\"Duration\",\"type\":\"Number\"}]",
+            "created_date": "2024-04-29 19:45:45.547323+03",
+            "community": 5,
+            "created_by": 3
+        }
+    },
+    {
+        "model": "backend.posttemplate",
+        "pk": 8,
+        "fields": {
+            "name": "Default Template",
+            "settings": "[{\"name\": \"Description\", \"type\": \"Text\"}]",
+            "created_date": "2024-04-29 19:45:45.547323+03",
+            "community": 5,
+            "created_by": 3
+        }
+    },
+    {
+        "model": "backend.community_followers",
+        "pk": 3,
+        "fields": {
+            "community_id": 4,
+            "user_id": 2
+        }
+    },
+    {
+        "model": "backend.post",
+        "pk": 1,
+        "fields": {
+            "created_date": "2024-04-29 19:45:45.547323+03",
+            "input": "{\"title\":\"Fight Day\",\"start_date\":\"2024-05-02\",\"fighters\":\"Altan - Oğuz\",\"description\":\"harika dövüş\"}",
+            "likes": 0,
+            "dislikes": 0,
+            "community_id": 4,
+            "user_id": 3,
+            "template_id" : 3
+        }
+    },
+    {
+        "model": "backend.post",
+        "pk": 3,
+        "fields": {
+            "created_date": "2024-04-29 19:45:45.547323+03",
+            "input": "{\"title\":\"Star Trek\",\"description\":\"My journey with the fiction starts with watching Star Trek\"}",
+            "likes": 0,
+            "dislikes": 0,
+            "community_id": 5,
+            "user_id": 3,
+            "template_id" : 4
+        }
+    },
+    {
+        "model": "backend.post",
+        "pk": 4,
+        "fields": {
+            "created_date": "2024-04-29 19:45:45.547323+03",
+            "input": "{\"title\":\"New Movie Coming Up\",\"start_date\":\"2024-04-30\",\"movie_name\":\"Star Trek Amasyada\",\"duration\":\"120\"}",
+            "likes": 0,
+            "dislikes": 0,
+            "community_id": 5,
+            "user_id": 3,
+            "template_id" : 5
+        }
+    }
+
+]

@@ -14,3 +14,13 @@ RUN pip install --no-cache-dir -r requirements.txt
 
 # Copy project
 COPY . /usr/src/app/
+
+# Copy entrypoint script
+COPY entrypoint.sh /usr/src/app/entrypoint.sh
+RUN chmod +x /usr/src/app/entrypoint.sh
+
+# Set entrypoint
+ENTRYPOINT ["/usr/src/app/entrypoint.sh"]
+
+# Default command
+CMD ["python", "manage.py", "runserver", "0.0.0.0:8000"]

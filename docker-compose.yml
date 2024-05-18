@@ -14,9 +14,6 @@ services:
     build:
       context: ./community_back_end
       dockerfile: Dockerfile-django
-    command: >
-            bash -c "python manage.py migrate
-            && python manage.py runserver 0.0.0.0:8000"
     volumes:
       - ./community_back_end:/usr/src/app
     ports:
