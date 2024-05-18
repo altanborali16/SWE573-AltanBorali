@@ -1,0 +1,39 @@
+version: '26.1.1'
+
+services:
+  db:
+    image: postgres:13
+    volumes:
+      - postgres_data:/var/lib/postgresql/data/
+    environment:
+      - POSTGRES_DB=mydatabase
+      - POSTGRES_USER=myuser
+      - POSTGRES_PASSWORD=mypassword
+
+  web:
+    build:
+      context: ./community_back_end
+      dockerfile: Dockerfile-django
+    command: >
+            bash -c "python manage.py migrate
+            && python manage.py runserver 0.0.0.0:8000"
+    volumes:
+      - ./community_back_end:/usr/src/app
+    ports:
+      - "8000:8000"
+    environment:
+      - DATABASE_URL=postgres://myuser:mypassword@db:5432/mydatabase
+    depends_on:
+      - db
+
+  frontend:
+    build:
+      context: ./community_front-end
+      dockerfile: Dockerfile-react
+    volumes:
+      - ./community_front-end:/usr/src/app
+    ports:
+      - "3000:3000"
+
+volumes:
+  postgres_data:

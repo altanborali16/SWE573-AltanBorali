@@ -11,6 +11,8 @@ https://docs.djangoproject.com/en/5.0/ref/settings/
 """
 
 from pathlib import Path
+import os
+from urllib.parse import urlparse
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -105,16 +107,40 @@ WSGI_APPLICATION = 'community_back_end.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/5.0/ref/settings/#databases
 
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.postgresql',
+#         'NAME': 'CommunityDB',  # Replace with your PostgreSQL database name
+#         'USER': 'postgres',       # Replace with your PostgreSQL username
+#         'PASSWORD': '241516',   # Replace with your PostgreSQL password
+#         'HOST': 'localhost',           # Or your PostgreSQL server address
+#         'PORT': '5432',                # Or your PostgreSQL port
+#     }
+# }
+DATABASE_URL = os.getenv('DATABASE_URL')
+
+# Default database settings
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'CommunityDB',  # Replace with your PostgreSQL database name
-        'USER': 'postgres',       # Replace with your PostgreSQL username
-        'PASSWORD': '241516',   # Replace with your PostgreSQL password
-        'HOST': 'localhost',           # Or your PostgreSQL server address
-        'PORT': '5432',                # Or your PostgreSQL port
+        'NAME': 'mydatabase',  # Default database name
+        'USER': 'myuser',      # Default database user
+        'PASSWORD': 'mypassword',  # Default database password
+        'HOST': 'db',          # Service name in Docker Compose network
+        'PORT': '5432',        # PostgreSQL default port
     }
 }
+
+# Override default settings if DATABASE_URL is provided
+if DATABASE_URL:
+    url = urlparse(DATABASE_URL)
+    DATABASES['default'].update({
+        'NAME': url.path[1:],
+        'USER': url.username,
+        'PASSWORD': url.password,
+        'HOST': url.hostname,
+        'PORT': url.port,
+    })
 
 
 # Password validation

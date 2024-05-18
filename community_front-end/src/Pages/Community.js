@@ -252,15 +252,14 @@ const Community = () => {
       </div>
       {/* Templates section */}
       <h1>Community Templates</h1>
-      {isOwner ||
-        (isManager && (
-          <button
-            className="btn btn-primary mb-3"
-            onClick={() => setShowModal(true)}
-          >
-            Create New Template
-          </button>
-        ))}
+      {(isOwner || isManager) && (
+        <button
+          className="btn btn-primary mb-3"
+          onClick={() => setShowModal(true)}
+        >
+          Create New Template
+        </button>
+      )}
       {/* Modal for creating a new template */}
       {showModal && (
         <div
