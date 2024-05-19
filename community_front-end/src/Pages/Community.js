@@ -4,6 +4,8 @@ import axios from "axios";
 import "bootstrap/dist/css/bootstrap.min.css";
 import { Modal, Button, Form, Card } from "react-bootstrap";
 import Navbar from "./Navbar";
+// import PlacesAutocomplete from "react-places-autocomplete";
+// import { LoadScript } from '@react-google-maps/api';
 
 const Community = () => {
   const navigate = useNavigate();
@@ -14,7 +16,7 @@ const Community = () => {
   const [newTemplateName, setNewTemplateName] = useState("");
   const [newTemplateFields, setNewTemplateFields] = useState([]);
   const [fieldToAdd, setFieldToAdd] = useState({ name: "", type: "" });
-  const [fieldTypes] = useState(["Text", "Number", "Date", "Bool"]);
+  const [fieldTypes] = useState(["Text", "Number", "Date", "Bool", "Url"]);  //"Location"
   const [showModal, setShowModal] = useState(false);
   const [showPostModal, setShowPostModal] = useState(false);
   const [selectedTemplate, setSelectedTemplate] = useState(null);
@@ -25,6 +27,8 @@ const Community = () => {
   const [isOwner, setIsOwner] = useState(false);
   // const [isSubscriber, setIsSubscriber] = useState(false);
   const [isManager, setIsManager] = useState(false);
+  // const [address, setAddress] = useState("");
+  // const libraries = ['places'];
 
   useEffect(() => {
     // Fetch community data using the ID
@@ -194,6 +198,10 @@ const Community = () => {
       setErrorMessage("Error creating post. Please try again.");
     }
   };
+  // const handleSelect = (address) => {
+  //   setAddress(address);
+  //   handleInputChange({ target: { name: 'Location', value: address } });
+  // };
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     setPostFormData((prevData) => ({
@@ -381,6 +389,7 @@ const Community = () => {
           </div>
         ))}
         {/* Modal for creating a new post */}
+        {/* <LoadScript googleMapsApiKey="YOUR_API_KEY" libraries={libraries}></LoadScript> */}
         <Modal
           show={showPostModal}
           onHide={() => {
@@ -410,12 +419,80 @@ const Community = () => {
                 JSON.parse(selectedTemplate.settings).map((field, index) => (
                   <Form.Group key={index}>
                     <Form.Label>{field.name}</Form.Label>
-                    <Form.Control
-                      type={field.type}
-                      name={field.name.toLowerCase().replace(/\s/g, "_")}
-                      onChange={handleInputChange}
-                      required
-                    />
+                    {field.type === "Bool" ? (
+                      <Form.Check
+                        type="checkbox"
+                        name={field.name.toLowerCase().replace(/\s/g, "_")}
+                        onChange={handleInputChange}
+                      />
+                    ) : field.type === "Url" ? (
+                      <Form.Control
+                        type="url"
+                        name={field.name.toLowerCase().replace(/\s/g, "_")}
+                        onChange={handleInputChange}
+                        required
+                      />
+                    // ) : field.type === "Location" ? (
+                    //   <PlacesAutocomplete
+                    //     value={address}
+                    //     onChange={setAddress}
+                    //     onSelect={handleSelect}
+                    //   >
+                    //     {({
+                    //       getInputProps,
+                    //       suggestions,
+                    //       getSuggestionItemProps,
+                    //       loading,
+                    //     }) => (
+                    //       <div>
+                    //         <Form.Control
+                    //           {...getInputProps({
+                    //             placeholder: "Search Places ...",
+                    //             className: "location-search-input",
+                    //           })}
+                    //           required
+                    //         />
+                    //         <div className="autocomplete-dropdown-container">
+                    //           {loading && <div>Loading...</div>}
+                    //           {suggestions.map((suggestion) => {
+                    //             const className = suggestion.active
+                    //               ? "suggestion-item--active"
+                    //               : "suggestion-item";
+                    //             const style = suggestion.active
+                    //               ? {
+                    //                   backgroundColor: "#fafafa",
+                    //                   cursor: "pointer",
+                    //                 }
+                    //               : {
+                    //                   backgroundColor: "#ffffff",
+                    //                   cursor: "pointer",
+                    //                 };
+                    //             return (
+                    //               <div
+                    //                 {...getSuggestionItemProps(suggestion, {
+                    //                   className,
+                    //                   style,
+                    //                 })}
+                    //               >
+                    //                 <span>{suggestion.description}</span>
+                    //               </div>
+                    //             );
+                    //           })}
+                    //         </div>
+                    //         <Form.Control.Feedback type="invalid">
+                    //           Location is required.
+                    //         </Form.Control.Feedback>
+                    //       </div>
+                    //     )}
+                    //   </PlacesAutocomplete>
+                    ) : (
+                      <Form.Control
+                        type={field.type}
+                        name={field.name.toLowerCase().replace(/\s/g, "_")}
+                        onChange={handleInputChange}
+                        required
+                      />
+                    )}
                     <Form.Control.Feedback type="invalid">
                       {field.name} is required.
                     </Form.Control.Feedback>
