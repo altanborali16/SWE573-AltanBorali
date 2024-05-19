@@ -10,6 +10,7 @@ services:
         value: myuser
       - key: POSTGRES_PASSWORD
         value: mypassword
+    plan: standard
 
   - type: web
     name: backend
@@ -19,7 +20,7 @@ services:
       - key: DATABASE_URL
         value: postgres://myuser:mypassword@db:5432/mydatabase
     buildCommand: "pip install -r requirements.txt"
-    plan: free
+    plan: standard
     autoDeploy: true
 
   - type: web
@@ -27,5 +28,5 @@ services:
     env: docker
     dockerfilePath: ./community_front-end/Dockerfile-react
     buildCommand: "npm install"
-    plan: free
+    plan: standard
     autoDeploy: true
