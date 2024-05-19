@@ -1,0 +1,37 @@
+services:
+  - type: web
+    name: db
+    env: docker
+    dockerfilePath: ./community_back_end/Dockerfile-django
+    envVars:
+      - key: POSTGRES_DB
+        value: mydatabase
+      - key: POSTGRES_USER
+        value: myuser
+      - key: POSTGRES_PASSWORD
+        value: mypassword
+
+  - type: web
+    name: backend
+    env: docker
+    dockerfilePath: ./community_back_end/Dockerfile-django
+    envVars:
+      - key: DATABASE_URL
+        value: postgres://myuser:mypassword@db:5432/mydatabase
+    buildCommand: "pip install -r requirements.txt"
+    startCommand: "gunicorn community_back_end.wsgi:application --bind 0.0.0.0:8000"
+    plan: free
+    disk:
+      sizeGB: 1
+    autoDeploy: true
+
+  - type: web
+    name: frontend
+    env: docker
+    dockerfilePath: ./community_front-end/Dockerfile-react
+    buildCommand: "npm install"
+    startCommand: "npm start"
+    plan: free
+    disk:
+      sizeGB: 1
+    autoDeploy: true
