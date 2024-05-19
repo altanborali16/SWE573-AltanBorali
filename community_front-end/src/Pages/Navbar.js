@@ -56,7 +56,7 @@ const Navbar = ({
               </li>
               <li>
                 <button className="dropdown-item" onClick={handleUserSettings}>
-                  User Settings
+                  User Profile
                 </button>
               </li>
             </ul>

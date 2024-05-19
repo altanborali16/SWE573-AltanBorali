@@ -93,6 +93,8 @@ const Communities = () => {
           return community;
         });
         setCommunities(updatedCommunities);
+        setFilteredCommunities(updatedCommunities);
+        filterCommunities("");
         console.log(response.data.message);
       } catch (error) {
         console.error("Error following community:", error);
@@ -128,6 +130,8 @@ const Communities = () => {
           return community;
         });
         setCommunities(updatedCommunities);
+        setFilteredCommunities(updatedCommunities);
+        filterCommunities("");
         console.log(response.data.message);
       } catch (error) {
         console.error("Error unsubscribing from community:", error);
@@ -170,7 +174,7 @@ const Communities = () => {
   };
   // Function to handle search input change
   const handleSearch = (e) => {
-    console.log("E : " , e)
+    // console.log("E : " , e)
     filterCommunities(e);
   };
 
