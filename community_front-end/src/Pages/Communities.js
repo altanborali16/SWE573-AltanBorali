@@ -92,10 +92,19 @@ const Communities = () => {
           }
           return community;
         });
+        const updatedFilteredCommunities = filteredCommunities.map((community) => {
+          if (community.id === communityId) {
+            return {
+              ...community,
+              followers: [...community.followers, currentUser.id],
+            };
+          }
+          return community;
+        });
 
         // Set the updated communities state
         setCommunities(updatedCommunities);
-        setFilteredCommunities(updatedCommunities);
+        setFilteredCommunities(updatedFilteredCommunities);
         setSubInfoMessage(response.data.message);
         console.log(response.data.message);
       } catch (error) {
@@ -130,10 +139,21 @@ const Communities = () => {
           }
           return community;
         });
+        const updatedFiteredCommunities = filteredCommunities.map((community) => {
+          if (community.id === communityId) {
+            return {
+              ...community,
+              followers: community.followers.filter(
+                (followerId) => followerId !== currentUser.id
+              ),
+            };
+          }
+          return community;
+        });
 
         // Set the updated communities state
         setCommunities(updatedCommunities);
-        setFilteredCommunities(updatedCommunities);
+        setFilteredCommunities(updatedFiteredCommunities);
         setSubInfoMessage(response.data.message);
 
         console.log(response.data.message);
