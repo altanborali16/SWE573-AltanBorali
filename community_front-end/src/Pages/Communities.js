@@ -8,6 +8,7 @@ const Communities = () => {
   const [communities, setCommunities] = useState([]);
   const [currentUser, setCurrentUser] = useState(null);
   const [filteredCommunities, setFilteredCommunities] = useState([]);
+  const [subInfoMessage, setSubInfoMessage] = useState("");
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -72,29 +73,30 @@ const Communities = () => {
       try {
         const response = await axios.post(
           `http://localhost:8000/api/follow_community/${communityId}/`,
-          null, // You're not sending any data in this POST request, so use null
+          null,
           {
             headers: {
               Authorization: `Token ${token}`,
-              "Content-Type": "application/json", // Content-Type header is correct
+              "Content-Type": "application/json",
             },
           }
         );
 
         // Update the UI or state to reflect the follow action
-        // For example, update the communities state to show the user is following
         const updatedCommunities = communities.map((community) => {
           if (community.id === communityId) {
             return {
               ...community,
-              followers: [...community.followers, currentUser.id], // Assuming currentUser.id is the user's ID
+              followers: [...community.followers, currentUser.id],
             };
           }
           return community;
         });
+
+        // Set the updated communities state
         setCommunities(updatedCommunities);
         setFilteredCommunities(updatedCommunities);
-        filterCommunities("");
+        setSubInfoMessage(response.data.message);
         console.log(response.data.message);
       } catch (error) {
         console.error("Error following community:", error);
@@ -111,13 +113,12 @@ const Communities = () => {
           {
             headers: {
               Authorization: `Token ${token}`,
-              "Content-Type": "application/json", // Content-Type header is correct
+              "Content-Type": "application/json",
             },
           }
         );
 
         // Update the UI or state to reflect the unsubscribe action
-        // For example, update the communities state to show the user has unsubscribed
         const updatedCommunities = communities.map((community) => {
           if (community.id === communityId) {
             return {
@@ -129,9 +130,12 @@ const Communities = () => {
           }
           return community;
         });
+
+        // Set the updated communities state
         setCommunities(updatedCommunities);
         setFilteredCommunities(updatedCommunities);
-        filterCommunities("");
+        setSubInfoMessage(response.data.message);
+
         console.log(response.data.message);
       } catch (error) {
         console.error("Error unsubscribing from community:", error);
@@ -205,6 +209,9 @@ const Communities = () => {
       />
       <h1>Communities</h1>
       <div className="row">
+      {subInfoMessage && (
+            <div className="alert alert-success">{subInfoMessage}</div>
+          )}
         {filteredCommunities && filteredCommunities.length > 0 ? (
           filteredCommunities.map((community) => (
             <div className="col-md-4 mb-4" key={community.id}>
